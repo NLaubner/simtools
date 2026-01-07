@@ -35,13 +35,10 @@ The simulation outputs the overall probability of infection as well as the proba
 ## How to Run the Simulation
 
 1. Install the required dependencies:
-   ```bash
  `pip install -r requirements.txt`
 2. Adjust simulation parameters if desired in:
-    ```bash
 `configs/params.json`
 3. Open and run the Jupyter notebook:
-    ```bash
 `notebooks/analysis.ipynb`
 4. Execute all cells in the notebook to run the simulation and view the results, including summary statistics and visualizations.
 --------
