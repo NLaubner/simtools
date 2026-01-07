@@ -4,6 +4,7 @@ This project uses a Monte Carlo simulation to estimate the probability that a st
 
 # Project structure 
 
+```
 ├── configs/
 │   └── params.json
 ├── notebooks/
@@ -13,6 +14,7 @@ This project uses a Monte Carlo simulation to estimate the probability that a st
 ├── .gitignore
 ├── README.md
 └── requirements.txt
+
 
 # Scenario 
 
