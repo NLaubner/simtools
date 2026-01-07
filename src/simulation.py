@@ -1,49 +1,125 @@
+"""
+Monte Carlo simulation of influenza infection risk at a university campus.
+
+A student visits several campus locations ("spots). For each spot, the number 
+of people present is sampled randomly and the probability of infection is 
+computed based on duration, crowd size and infection parameters.
+"""
+
+import json
+import math
 import numpy as np
 import pandas as pd
 
 
-def simulate_one_day(rng, params):
-    infected = False
-    infected_at = None
-    total_contacts = 0
+def load_config(path="configs/params.json"):
+    """Load simulation parameters from a JSON file.
+    Parameters
+    
+    path : str
+        Path to JSON config file.
 
-    for place in params["route"]:
-        if infected or total_contacts >= params["max_contacts"]:
-            break
+    Returns
 
-        low, high = params["contacts_range"][place]
-        contacts_here = rng.integers(low, high + 1)
+    dict
+        Simulation parameters.
+    """
+    with open(path, "r", encoding="utf-8") as f:
+        return json.load(f)
+    
 
-        contacts_here = min(contacts_here,
-                            params["max_contacts"] - total_contacts)
+def p_infection(duration_min, infectious_people, beta_per_minute, multiplier=1.0):
+    """Return infection probability for a single spot visit.
+    Parameters
 
-        for _ in range(contacts_here):
-            if rng.random() < params["prevalence"]:
-                if rng.random() < params["beta"][place]:
-                    infected = True
-                    infected_at = place
-                    break
+    duration_min : int
+        Time spent at spot in minutes.
+    infectious_people : int
+        Number of infectious individuals.
+    beta_per_minute : float
+        Transmission rate per minute. 
+    multiplier : float
+        Spot-specific risk factor
 
-        total_contacts += contacts_here
+    Returns
 
-    return infected, infected_at, total_contacts
+    float
+        Infection probability.
+    """
+    if infectious_people <= 0:
+        return 0.0
+    lam= beta_per_minute * multiplier * duration_min * infectious_people
+    return 1.0 - math.exp(-lam)
 
 
-def run_monte_carlo(params):
-    rng = np.random.default_rng(params["seed"])
+def run_monte_carlo(cfg, return_details=True):
+    """Run Monte Carlo Simulation and return results and summary
+    
+    Parameters
 
-    records = []
+    cfg : dict
+        Simulation configuration.
+    return_details : bool
+        Return per-run details if True
 
-    for run in range(params.get["runs", 0]):
-        infected, place, contacts = simulate_one_day(rng, params)
+    Returns
 
-        records.append({
-            "run": run,
-            "infected": infected,
-            "infected_at": place,
-            "total_contacts": contacts
-        })
+    pandas.DataFrame
+        Simulation results.
+    pandas.DataFrame
+        Summary statistics.
+    """
+    rng = np.random.default_rng(cfg["seed"])
+    n = cfg["n_simulations"]
 
-    df = pd.DataFrame(records)
+    route = cfg["route"]
+    spots = cfg["spots"]
+    p_inf_people = cfg["p_infectious"]
+    beta = cfg["beta_per_minute"]
 
-    return df
+    infection_spots = []
+    rows = []
+
+    for i in range(n):
+        infected = False
+        infected_at = None
+        row = {"run": i}
+
+        for spot_name in route:
+            s = spots[spot_name]
+            duration = s["duration_min"]
+            n_people = int(rng.integers(s["people_min"], s["people_max"]+ 1))
+            n_infectious = int(rng.binomial(n_people, p_inf_people))
+            mult = s.get("multiplier", 1.0)
+
+            p = p_infection(duration, n_infectious, beta, mult)
+
+            if return_details:
+                row[f"{spot_name}_people"] = n_people
+                row[f"{spot_name}_infectious"] = n_infectious
+
+            if (not infected) and (rng.random() < p):
+                infected = True
+                infected_at = spot_name
+
+        infection_spots.append(infected_at)
+        if return_details:
+            row["infected"] = infected_at is not None
+            row["infection_spot"] = infected_at
+            rows.append(row)
+
+    overall = sum(s is not None for s in infection_spots) / n
+    per_spot = {spot: sum(s == spot for s in infection_spots) / n for spot in route}
+
+    summary = pd.DataFrame(
+        [{"metric": "overall_infection_probability", "value": overall}]
+        + [{"metric": f"p_infection_happens_at_{spot}", "value": per_spot[spot]} for spot in route]
+
+    )
+
+    results = pd.DataFrame(rows) if return_details else pd.DataFrame(
+        {"infection_spot": infection_spots}
+
+    )
+
+    return results, summary
