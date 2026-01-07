@@ -20,7 +20,7 @@ This project uses a Monte Carlo simulation to estimate the probability that a st
 
 The student follows a predifined route through several locations on campus, taking into account the time spent at each location and a random nummer of people present.
 
-street -> lecture hall -> way_to_cafeteria -> cafeteria -> way_to_bib -> bib
+street -> lecture -> way_to_cafeteria -> cafeteria -> way_to_bib -> bib
 
 At each location, the student spends a fixed amount of time and encounters a random number of people.
 
