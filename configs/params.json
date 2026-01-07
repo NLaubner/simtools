@@ -1,6 +1,6 @@
 {
   "seed": 42,
-  "n_simulations": 1000,
+  "n_simulations": 10000,
 
   "p_infectious": 0.02,
   "beta_per_minute": 0.0015,
