@@ -1,0 +1,37 @@
+{
+  "seed": 42,
+  "n_simulations": 10000,
+
+  "p_infectious": 0.02,
+  "beta_per_minute": 0.0015,
+
+  "route": ["street", "lecture", "cafeteria", "bib"],
+
+  "spots": {
+    "street": {
+      "duration_min":10,
+      "people_min": 5,
+      "people_max": 15,
+      "multiplier": 0.5
+    
+    },
+    "lecture:": {
+      "duration_min":90,
+      "people_min": 10,
+      "people_max": 50,
+      "multiplier": 1.2
+    },
+    "cafeteria": {
+      "duration_min":30,
+      "people_min": 40,
+      "people_max": 80,
+      "multiplier": 1.5
+    },
+    "bib": {
+      "duration_min": 60,
+      "people_min": 10,
+      "people_max": 30,
+      "multiplier": 1.0
+    }
+  }
+}
