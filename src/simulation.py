@@ -80,11 +80,13 @@ def run_monte_carlo(cfg, return_details=True):
     infection_spots = []
     rows = []
 
+    # Each iteration represents one simulated day of the student
     for i in range(n):
         infected = False
         infected_at = None
         row = {"run": i}
-
+       
+        # Student visits campus locations sequentially; infection stops the process
         for spot_name in route:
             s = spots[spot_name]
             duration = s["duration_min"]
