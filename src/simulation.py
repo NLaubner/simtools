@@ -86,7 +86,7 @@ def run_monte_carlo(cfg, return_details=True):
         infected_at = None
         row = {"run": i}
        
-        # Student visits campus locations sequentially; infection stops the process
+        # Student visits campus locations sequentially, infection stops the process
         for spot_name in route:
             s = spots[spot_name]
             duration = s["duration_min"]
