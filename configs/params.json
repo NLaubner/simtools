@@ -5,7 +5,7 @@
   "p_infectious": 0.02,
   "beta_per_minute": 0.0015,
 
-  "route": ["street", "lecture", "cafeteria", "bib"],
+  "route": ["street", "lecture","way_to_cafeteria", "cafeteria", "way_to_bib", "bib"],
 
   "spots": {
     "street": {
@@ -20,12 +20,28 @@
       "people_min": 10,
       "people_max": 50,
       "multiplier": 1.2
+    
+    },
+    "way_to_cafeteria": {
+      "duration_min":5,
+      "people_min": 5,
+      "people_max": 10,
+      "multiplier": 0.25
+    
     },
     "cafeteria": {
       "duration_min":30,
-      "people_min": 40,
-      "people_max": 80,
+      "people_min": 50,
+      "people_max": 150,
       "multiplier": 1.5
+    
+    },
+      "way_to_bib": {
+      "duration_min":5,
+      "people_min": 5,
+      "people_max": 10,
+      "multiplier": 0.25
+    
     },
     "bib": {
       "duration_min": 60,
