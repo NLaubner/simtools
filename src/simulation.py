@@ -1,7 +1,7 @@
 """
 Monte Carlo simulation of influenza infection risk at a university campus.
 
-A student visits several campus locations ("spots). For each spot, the number 
+A student visits several campus locations ("spots"). For each spot, the number 
 of people present is sampled randomly and the probability of infection is 
 computed based on duration, crowd size and infection parameters.
 """
